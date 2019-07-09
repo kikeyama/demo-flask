@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-flask
+  #namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-flask
+  template:
+    metadata:
+      labels:
+        app: demo-flask
+    spec:
+      containers:
+      - name: demo-flask  
+        image: gcr.io/datadog-demodog/demo-flask:latest
+        ports:
+        - containerPort: 5050
+        env:
+        - name: DB_HOST
+          value: "10.175.192.3"
+        - name: DB_USERNAME
+          value: "kikeyama"
+        - name: DB_PASSWORD
+          value: "password"
+        - name: DB_NAME
+          value: "kikeyamadb"
+        - name: DD_SERVICE_NAME
+          value: "demo-flask"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-flask
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-flask
+  ports:
+  - name: flaskport
+    protocol: TCP
+    port: 80
+    targetPort: 5050

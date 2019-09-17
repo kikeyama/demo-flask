@@ -82,6 +82,19 @@ def post_endpoint():
     app.logger.info('posting message: ' + flask_request.form['message'])
     return flask_request.form['message']
 
+@app.route('/lambda')
+def lambda_endpoint():
+    app.logger.info('getting lambda endpoint')
+    q = {'TableName': 'kikeyama-dynamodb'}
+    r = requests.get('https://8m92rdlm25.execute-api.us-east-1.amazonaws.com/demo/lambda', headers={
+        'x-datadog-trace-id': str(tracer.current_span().trace_id),
+        'x-datadog-parent-id': str(tracer.current_span().span_id),
+    }, params=q)
+    dict_r = json.loads(r.text)
+    if dict_r['ResponseMetadata']['HTTPStatusCode'] == 200:
+        app.logger.info('lambda call: Returned ' + str(dict_r['Count']) + ' results with RequestId: ' + dict_r['ResponseMetadata']['RequestId'])
+    return 'Lambda Traces'
+
 if __name__ == '__main__':
     app.logger.info('%(message)s This is __main__ log')
     app.run(host='0.0.0.0', port='5050')

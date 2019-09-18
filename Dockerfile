@@ -7,4 +7,4 @@ ADD requirements.txt /
 # ENV DB_PASSWORD <DB_PASSWORD>
 # ENV DB_NAME <DB_NAME>
 RUN pip install -r requirements.txt
-CMD [ "ddtrace-run", "python", "./flask_dd_trace.py" ]
+CMD [ "DATADOG_SERVICE_NAME=kikeyama-flask", "ddtrace-run", "python", "./flask_dd_trace.py" ]

@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
+  signalfx: kikeyama/signalfx@dev:init
 
 jobs:
   build:
@@ -14,9 +15,6 @@ jobs:
       - run:
           command: python3 ./flask_demo.py
           name: python run
-
-orbs:
-  signalfx: kikeyama/signalfx@dev:init
 
 workflows:
   main:

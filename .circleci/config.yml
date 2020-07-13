@@ -1,0 +1,27 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+      - run:
+          command: python3 ./flask_demo.py
+          name: python run
+
+orbs:
+  signalfx: kikeyama/signalfx@dev:init
+
+workflows:
+  main:
+    jobs:
+      - build
+      - signalfx/workflow-event:
+          name: signalfx_event
+          event_type: build
